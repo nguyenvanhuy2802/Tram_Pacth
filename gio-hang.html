@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Tràm Patch — Giỏ hàng</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Quicksand:wght@600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/cart.css">
+    <style>
+        :root {
+            --green: #244d3b;
+            --green2: #356b50;
+            --cream: #f7f3ea;
+            --paper: #fffdf8;
+            --line: #e7dfd2;
+            --text: #25342d;
+            --muted: #718078;
+            --gold: #c99e54;
+            --danger: #b84c4c;
+            --shadow: 0 20px 55px rgba(36, 77, 59, .12);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background: var(--cream);
+            color: var(--text);
+            font-family: "Be Vietnam Pro", Arial, sans-serif;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+
+        /* HEADER */
+
+        .cart-header {
+            height: 78px;
+            padding: 0 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 253, 248, .95);
+            border-bottom: 1px solid var(--line);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            color: var(--green);
+        }
+
+        .brand-logo {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .brand strong {
+            display: block;
+            font-family: Quicksand, sans-serif;
+        }
+
+        .brand small {
+            display: block;
+            margin-top: 3px;
+            font-size: 9px;
+            letter-spacing: 2px;
+        }
+
+        .continue-shopping {
+            color: var(--green);
+            font-weight: 800;
+        }
+
+
+        /* PAGE */
+
+        .checkout-page {
+            max-width: 1180px;
+            margin: auto;
+            padding: 70px 24px 100px;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .page-title span,
+        .checkout-heading span {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--green2);
+        }
+
+        .page-title h1 {
+            font: 800 48px Quicksand;
+            color: var(--green);
+            margin: 8px 0;
+        }
+
+        .page-title p {
+            color: var(--muted);
+        }
+
+
+        /* EMPTY */
+
+        .empty-cart {
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            padding: 70px 20px;
+            text-align: center;
+        }
+
+        .empty-cart>div {
+            font-size: 55px;
+        }
+
+        .empty-cart h2 {
+            color: var(--green);
+            font-family: Quicksand;
+        }
+
+        .empty-cart p {
+            color: var(--muted);
+        }
+
+
+        /* CART */
+
+        .cart-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .cart-box,
+        .summary-box,
+        .checkout-section {
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: 27px;
+        }
+
+        .cart-box {
+            overflow: hidden;
+        }
+
+        .box-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 25px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .box-title h2,
+        .summary-box h2 {
+            font: 800 23px Quicksand;
+            color: var(--green);
+            margin: 0;
+        }
+
+        .box-title span {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+
+        /* CART ITEM */
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 1fr auto auto auto;
+            align-items: center;
+            gap: 25px;
+            padding: 22px 25px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .cart-product {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .cart-product img {
+            width: 85px;
+            height: 85px;
+            object-fit: cover;
+            border-radius: 17px;
+            background: #eee;
+        }
+
+        .cart-product h3 {
+            margin: 0 0 6px;
+            color: var(--green);
+            font: 800 18px Quicksand;
+        }
+
+        .cart-product p {
+            margin: 0;
+            color: var(--gold);
+            font-weight: 800;
+        }
+
+        .quantity {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 5px;
+        }
+
+        .quantity button {
+            border: 0;
+            background: var(--cream);
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            font-weight: 800;
+            color: var(--green);
+        }
+
+        .quantity span {
+            min-width: 20px;
+            text-align: center;
+            font-weight: 800;
+        }
+
+        .item-total {
+            min-width: 100px;
+            text-align: right;
+            color: var(--green);
+        }
+
+        .remove-btn {
+            border: 0;
+            background: none;
+            color: var(--danger);
+            font-size: 24px;
+        }
+
+
+        /* SUMMARY */
+
+        .summary-box {
+            padding: 25px;
+            position: sticky;
+            top: 100px;
+        }
+
+        .summary-row,
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .summary-row {
+            margin: 20px 0;
+            color: var(--muted);
+        }
+
+        .summary-row strong {
+            color: var(--text);
+        }
+
+        .summary-box hr {
+            border: 0;
+            border-top: 1px solid var(--line);
+        }
+
+        .summary-total {
+            margin: 22px 0;
+        }
+
+        .summary-total strong {
+            color: var(--gold);
+            font-size: 24px;
+        }
+
+        .checkout-btn,
+        .primary-btn,
+        .submit-order {
+            display: block;
+            width: 100%;
+            text-align: center;
+            border: 0;
+            background: var(--green);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 14px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+
+        /* CHECKOUT */
+
+        .checkout-section {
+            margin-top: 30px;
+            padding: 35px;
+        }
+
+        .checkout-heading {
+            margin-bottom: 30px;
+        }
+
+        .checkout-heading h2 {
+            font: 800 32px Quicksand;
+            color: var(--green);
+            margin: 7px 0;
+        }
+
+        .checkout-heading p {
+            color: var(--muted);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            color: var(--green);
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            border: 1px solid var(--line);
+            border-radius: 13px;
+            padding: 14px;
+            font: inherit;
+            outline: none;
+            background: #fffdf8;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--green2);
+            box-shadow: 0 0 0 3px rgba(53, 107, 80, .08);
+        }
+
+
+        /* PAYMENT */
+
+        .payment-box {
+            margin-top: 30px;
+            padding: 25px;
+            background: var(--cream);
+            border-radius: 20px;
+        }
+
+        .payment-box h3 {
+            margin-top: 0;
+            color: var(--green);
+            font-family: Quicksand;
+        }
+
+        .payment-option {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            background: white;
+            border: 1px solid var(--line);
+            padding: 16px;
+            border-radius: 14px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .payment-option input {
+            margin-top: 4px;
+        }
+
+        .payment-option span {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .payment-option b {
+            color: var(--green);
+        }
+
+        .payment-option small {
+            color: var(--muted);
+        }
+
+
+        /* SUBMIT */
+
+        .submit-order {
+            margin-top: 25px;
+            font-size: 16px;
+        }
+
+        .submit-order:hover,
+        .checkout-btn:hover,
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+
+        /* SUCCESS */
+
+        .success-order {
+            display: none;
+            text-align: center;
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: 30px;
+            padding: 60px 30px;
+            margin-top: 30px;
+        }
+
+        .success-icon {
+            width: 70px;
+            height: 70px;
+            display: grid;
+            place-items: center;
+            margin: auto;
+            border-radius: 50%;
+            background: #dcebdc;
+            color: var(--green);
+            font-size: 35px;
+            font-weight: 800;
+        }
+
+        .success-order h2 {
+            color: var(--green);
+            font: 800 32px Quicksand;
+        }
+
+        .success-order p {
+            color: var(--muted);
+        }
+
+        .order-code {
+            background: var(--cream);
+            display: inline-block;
+            padding: 14px 20px;
+            border-radius: 12px;
+            margin: 10px 0 25px;
+        }
+
+        .order-code strong {
+            color: var(--gold);
+        }
+
+
+        /* TOAST */
+
+        #toast {
+            position: fixed;
+            right: 25px;
+            bottom: 25px;
+            background: var(--green);
+            color: white;
+            padding: 14px 20px;
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: .3s;
+            z-index: 999;
+        }
+
+        #toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+
+        /* RESPONSIVE */
+
+        @media(max-width:850px) {
+
+            .cart-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-box {
+                position: static;
+            }
+
+            .cart-item {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .item-total {
+                text-align: left;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+        }
+
+        @media(max-width:600px) {
+
+            .checkout-page {
+                padding: 40px 15px 70px;
+            }
+
+            .page-title h1 {
+                font-size: 38px;
+            }
+
+            .checkout-section {
+                padding: 22px;
+            }
+
+            .cart-header {
+                padding: 0 15px;
+            }
+
+            .continue-shopping {
+                font-size: 13px;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="cart-header">
+
+        <a class="brand" href="index.html">
+            <img class="brand-logo" src="assets/logo.png" alt="Tràm Patch Logo">
+
+            <div>
+
+                <strong>
+                    TRÀM PATCH
+                </strong>
+
+                <small>
+                    4T HOLDINGS
+                </small>
+
+            </div>
+
+        </a>
+
+        <a href="index.html#products" class="continue-shopping">
+
+            ← Tiếp tục mua hàng
+
+        </a>
+
+    </header>
+
+
+    <main class="checkout-page">
+
+        <div class="page-title">
+
+            <span>YOUR ORDER</span>
+
+            <h1>
+                Giỏ hàng
+            </h1>
+
+            <p>
+                Kiểm tra sản phẩm trước khi đặt hàng.
+            </p>
+
+        </div>
+
+
+        <!-- GIỎ HÀNG RỖNG -->
+
+        <div id="emptyCart" class="empty-cart">
+
+            <div>
+                🛒
+            </div>
+
+            <h2>
+                Giỏ hàng đang trống
+            </h2>
+
+            <p>
+                Hãy chọn một sản phẩm để bắt đầu.
+            </p>
+
+            <a href="index.html#products" class="primary-btn">
+
+                Xem sản phẩm
+
+            </a>
+
+        </div>
+
+
+        <!-- GIỎ HÀNG -->
+
+        <div id="cartContent" class="cart-layout">
+
+
+            <!-- DANH SÁCH -->
+
+            <section class="cart-box">
+
+                <div class="box-title">
+
+                    <h2>
+                        Sản phẩm của bạn
+                    </h2>
+
+                    <span>
+                        Giỏ hàng
+                    </span>
+
+                </div>
+
+                <div id="cartItems"></div>
+
+            </section>
+
+
+            <!-- TỔNG TIỀN -->
+
+            <aside class="summary-box">
+
+                <h2>
+                    Tổng đơn hàng
+                </h2>
+
+                <div class="summary-row">
+
+                    <span>
+                        Tạm tính
+                    </span>
+
+                    <strong id="subtotal">
+                        0đ
+                    </strong>
+
+                </div>
+
+                <div class="summary-row">
+
+                    <span>
+                        Phí vận chuyển
+                    </span>
+
+                    <strong id="shipping">
+                        0đ
+                    </strong>
+
+                </div>
+
+                <hr>
+
+                <div class="summary-total">
+
+                    <span>
+                        Tổng cộng
+                    </span>
+
+                    <strong id="total">
+                        0đ
+                    </strong>
+
+                </div>
+
+                <a href="#checkout" class="checkout-btn">
+
+                    Tiến hành đặt hàng →
+
+                </a>
+
+            </aside>
+
+        </div>
+
+
+        <!-- FORM ĐẶT HÀNG -->
+
+        <section id="checkout" class="checkout-section">
+
+            <div class="checkout-heading">
+
+                <span>
+                    CHECKOUT
+                </span>
+
+                <h2>
+                    Thông tin đặt hàng
+                </h2>
+
+                <p>
+                    Vui lòng nhập chính xác thông tin
+                    để Tràm Patch có thể liên hệ và giao hàng.
+                </p>
+
+            </div>
+
+
+            <form id="orderForm">
+
+
+                <div class="form-grid">
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Họ và tên *
+                        </label>
+
+                        <input type="text" id="customerName" required placeholder="Nguyễn Văn A">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Số điện thoại *
+                        </label>
+
+                        <input type="tel" id="customerPhone" required pattern="[0-9]{10,11}" placeholder="0901234567">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Email
+                        </label>
+
+                        <input type="email" id="customerEmail" placeholder="email@example.com">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Tỉnh / Thành phố *
+                        </label>
+
+                        <input type="text" id="customerCity" required placeholder="TP. Hồ Chí Minh">
+
+                    </div>
+
+
+                    <div class="form-group full">
+
+                        <label>
+                            Địa chỉ nhận hàng *
+                        </label>
+
+                        <input type="text" id="customerAddress" required placeholder="Số nhà, đường, phường/xã...">
+
+                    </div>
+
+
+                    <div class="form-group full">
+
+                        <label>
+                            Ghi chú đơn hàng
+                        </label>
+
+                        <textarea id="orderNote" rows="4" placeholder="Ví dụ: Giao giờ hành chính...">
+                    </textarea>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- THANH TOÁN -->
+
+                <div class="payment-box">
+
+                    <h3>
+                        Phương thức thanh toán
+                    </h3>
+
+
+                    <label class="payment-option">
+
+                        <input type="radio" name="payment" value="COD" checked>
+
+                        <span>
+
+                            <b>
+                                💵 Thanh toán khi nhận hàng
+                            </b>
+
+                            <small>
+                                Thanh toán trực tiếp khi nhận sản phẩm.
+                            </small>
+
+                        </span>
+
+                    </label>
+
+
+                    <label class="payment-option">
+
+                        <input type="radio" name="payment" value="BANK">
+
+                        <span>
+
+                            <b>
+                                🏦 Chuyển khoản ngân hàng
+                            </b>
+
+                            <small>
+                                Thông tin chuyển khoản được cung cấp sau khi đặt hàng.
+                            </small>
+
+                        </span>
+
+                    </label>
+
+
+                </div>
+
+
+                <button type="submit" class="submit-order">
+
+                    🛍️ Xác nhận đặt hàng
+
+                </button>
+
+
+            </form>
+
+        </section>
+
+
+        <!-- ĐẶT HÀNG THÀNH CÔNG -->
+
+        <section id="successOrder" class="success-order">
+
+            <div class="success-icon">
+                ✓
+            </div>
+
+            <h2>
+                Đặt hàng thành công!
+            </h2>
+
+            <p>
+                Cảm ơn bạn đã lựa chọn Tràm Patch.
+            </p>
+
+            <div class="order-code">
+                Mã đơn hàng:
+                <strong id="orderCode"></strong>
+            </div>
+
+            <a href="index.html" class="primary-btn">
+
+                Về trang chủ
+
+            </a>
+
+        </section>
+
+    </main>
+
+
+    <div id="toast"></div>
+
+
+    <script src="js/cart.js"></script>
+    <script src="js/checkout.js"></script>
+
+</body>
+
+</html>

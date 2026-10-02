@@ -1,0 +1,1724 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <title>Tràm Patch — Thử mẫu trên ảnh</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Quicksand:wght@600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #244d3b;
+            --green2: #356b50;
+            --cream: #f7f3ea;
+            --paper: #fffdf8;
+            --line: #e7dfd2;
+            --text: #25342d;
+            --muted: #718078;
+            --gold: #c99e54;
+            --shadow: 0 18px 50px rgba(36, 77, 59, .12);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--cream);
+            color: var(--text);
+            font-family: "Be Vietnam Pro", Arial, sans-serif;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .header {
+            height: 78px;
+            background: rgba(255, 253, 248, .95);
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(12px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            color: var(--green);
+        }
+
+        .brand-logo {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .brand-name {
+            font-family: Quicksand;
+            font-weight: 800;
+        }
+
+        .brand small {
+            display: block;
+            font-size: 9px;
+            letter-spacing: 2px;
+        }
+
+        .nav {
+            display: flex;
+            gap: 27px;
+            font-size: 14px;
+            color: #5f6d66;
+        }
+
+        .nav a:hover,
+        .nav .active {
+            color: var(--green);
+            font-weight: 800;
+        }
+
+        .header-btn {
+            background: var(--green);
+            color: #fff;
+            padding: 12px 18px;
+            border-radius: 999px;
+            font-weight: 800;
+        }
+
+        .page {
+            max-width: 1250px;
+            margin: auto;
+            padding: 42px 24px 80px;
+        }
+
+        .crumb {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 14px;
+        }
+
+        .crumb a {
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        .title {
+            text-align: center;
+            max-width: 780px;
+            margin: 0 auto 38px;
+        }
+
+        .eyebrow {
+            font-size: 12px;
+            letter-spacing: 2px;
+            font-weight: 800;
+            color: var(--green2);
+            margin-bottom: 10px;
+        }
+
+        .title h1 {
+            font: 800 clamp(34px, 5vw, 54px)/1.08 Quicksand;
+            color: var(--green);
+            margin: 0 0 12px;
+        }
+
+        .title p {
+            color: var(--muted);
+            line-height: 1.75;
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 24px;
+        }
+
+        .panel,
+        .stage-wrapper {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            box-shadow: var(--shadow);
+        }
+
+        .panel {
+            padding: 24px;
+        }
+
+        .panel h2 {
+            font: 800 21px Quicksand;
+            color: var(--green);
+            margin: 0 0 20px;
+        }
+
+        .group {
+            border-top: 1px solid var(--line);
+            padding: 18px 0;
+        }
+
+        .group:first-of-type {
+            border-top: 0;
+            padding-top: 0;
+        }
+
+        .label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #647169;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .upload-box {
+            border: 2px dashed #cec4b4;
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            background: #fcfaf5;
+        }
+
+        .upload-box .camera {
+            font-size: 42px;
+        }
+
+        .upload-box strong {
+            display: block;
+            margin-top: 6px;
+        }
+
+        .upload-box p {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .upload-btn {
+            display: inline-block;
+            background: var(--green);
+            color: #fff;
+            padding: 11px 16px;
+            border-radius: 12px;
+            font-weight: 800;
+            margin-top: 8px;
+            cursor: pointer;
+        }
+
+        .upload-box input {
+            display: none;
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .option {
+            border: 1px solid var(--line);
+            background: #fff;
+            border-radius: 12px;
+            padding: 9px 12px;
+            color: #506058;
+            transition: .2s;
+        }
+
+        .option.active {
+            border-color: var(--green);
+            background: #eef5ef;
+            color: var(--green);
+            font-weight: 800;
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 9px;
+        }
+
+        .template {
+            border: 1px solid var(--line);
+            background: white;
+            border-radius: 14px;
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+            color: #526158;
+            transition: .2s;
+        }
+
+        .template:hover {
+            transform: translateY(-2px);
+        }
+
+        .template.active {
+            border: 2px solid var(--green);
+            color: var(--green);
+            font-weight: 800;
+        }
+
+        .mini {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 7px;
+            display: grid;
+            place-items: center;
+            font-size: 23px;
+            border: 1px solid #ddd;
+        }
+
+        .scale,
+        .rotate {
+            width: 100%;
+        }
+
+        .scale {
+            accent-color: var(--green);
+        }
+
+        .rotate {
+            accent-color: #a47935;
+        }
+
+        .range-values {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .control-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .small-btn {
+            border: 1px solid var(--line);
+            background: #fff;
+            border-radius: 11px;
+            padding: 9px;
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        .saved-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .saved-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--line);
+            background: #fff;
+            border-radius: 12px;
+            padding: 9px;
+            font-size: 12px;
+        }
+
+        .saved-item button {
+            border: 0;
+            background: #edf5ef;
+            color: var(--green);
+            border-radius: 8px;
+            padding: 6px 8px;
+            font-weight: 800;
+        }
+
+        .actions {
+            display: flex;
+            gap: 9px;
+            margin-top: 20px;
+        }
+
+        .primary,
+        .secondary {
+            border: 0;
+            border-radius: 14px;
+            padding: 13px 15px;
+            font-weight: 800;
+        }
+
+        .primary {
+            background: var(--green);
+            color: #fff;
+            flex: 1;
+        }
+
+        .secondary {
+            background: #eee9df;
+            color: var(--green);
+        }
+
+        .stage-wrapper {
+            padding: 20px;
+        }
+
+        .stage-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .stage-head strong {
+            font: 800 20px Quicksand;
+            color: var(--green);
+        }
+
+        .stage-head span {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .photo-stage {
+            height: 680px;
+            border-radius: 23px;
+            background: #e5dfd4;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+
+        #userPhoto {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            display: none;
+            object-fit: contain;
+        }
+
+        .placeholder {
+            position: absolute;
+            text-align: center;
+            color: #879189;
+        }
+
+        .placeholder .big {
+            font-size: 65px;
+        }
+
+        .placeholder strong {
+            display: block;
+            color: #69766e;
+        }
+
+        .patch-overlay {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 100px;
+            height: 100px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, .23);
+            border: 2px solid rgba(0, 0, 0, .1);
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+            z-index: 10;
+            transition:
+                width .18s ease,
+                height .18s ease,
+                border-radius .2s ease,
+                background .2s ease;
+        }
+
+        .patch-overlay:active {
+            cursor: grabbing;
+        }
+
+        .patch-overlay span {
+            font-size: 32px;
+            pointer-events: none;
+        }
+
+        .patch-overlay .overlay-text {
+            font: 800 10px Quicksand;
+            color: var(--green);
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .patch-overlay.circle {
+            border-radius: 50%;
+        }
+
+        .patch-overlay.round {
+            border-radius: 24px;
+        }
+
+        .patch-overlay.square {
+            border-radius: 14px;
+        }
+
+        .patch-overlay.heart {
+            border-radius: 45% 45% 48% 48%;
+        }
+
+        .patch-overlay.star {
+            border-radius: 0;
+            clip-path:
+                polygon(50% 0%,
+                    61% 35%,
+                    98% 35%,
+                    68% 57%,
+                    79% 94%,
+                    50% 72%,
+                    21% 94%,
+                    32% 57%,
+                    2% 35%,
+                    39% 35%);
+        }
+
+        .patch-overlay.flower {
+            border-radius: 0;
+            clip-path:
+                polygon(50% 0%,
+                    62% 24%,
+                    88% 12%,
+                    78% 40%,
+                    100% 50%,
+                    78% 60%,
+                    88% 88%,
+                    62% 76%,
+                    50% 100%,
+                    38% 76%,
+                    12% 88%,
+                    22% 60%,
+                    0 50%,
+                    22% 40%,
+                    12% 12%,
+                    38% 24%);
+        }
+
+        .patch-overlay.cloud {
+            border-radius: 45px;
+        }
+
+        .patch-overlay.leaf {
+            border-radius: 60% 25% 60% 25%;
+        }
+
+        .patch-overlay.drop {
+            border-radius: 60% 60% 60% 20%;
+            transform-origin: center;
+        }
+
+        .drag-note {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, .92);
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            color: #66736c;
+            z-index: 20;
+            display: none;
+        }
+
+        .toast {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            background: var(--green);
+            color: #fff;
+            padding: 13px 17px;
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            transform: translateY(15px);
+            pointer-events: none;
+            transition: .25s;
+            z-index: 100;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: none;
+        }
+
+        @media(max-width:900px) {
+
+            .nav {
+                display: none;
+            }
+
+            .header-btn {
+                display: none;
+            }
+
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+
+            .photo-stage {
+                height: 550px;
+            }
+
+        }
+
+        @media(max-width:500px) {
+
+            .template-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .photo-stage {
+                height: 480px;
+            }
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <header class="header">
+
+        <a class="brand" href="index.html">
+            <img class="brand-logo" src="assets/logo.png" alt="Tràm Patch Logo">
+
+            <div>
+                <div class="brand-name">TRÀM PATCH</div>
+                <small>4T HOLDINGS</small>
+            </div>
+
+        </a>
+
+        <nav class="nav">
+            <a href="index.html">Trang chủ</a>
+            <a href="thiet-ke-mieng-dan.html">Thiết kế</a>
+            <a class="active" href="thu-mau-anh.html">Thử trên ảnh</a>
+            <a href="index.html#products">Sản phẩm</a>
+        </nav>
+
+        <a class="header-btn" href="thiet-ke-mieng-dan.html">
+            🎨 Thiết kế mới
+        </a>
+
+    </header>
+
+
+    <main class="page">
+
+        <div class="crumb">
+            <a href="index.html">Trang chủ</a>
+            /
+            Thử mẫu trên ảnh
+        </div>
+
+
+        <section class="title">
+
+            <div class="eyebrow">VIRTUAL TRY-ON</div>
+
+            <h1>Thử miếng dán trên ảnh của bạn</h1>
+
+            <p>
+                Tải ảnh lên, chọn mẫu có sẵn hoặc thiết kế của bạn.
+                Sau đó kéo, phóng to, thu nhỏ và xoay miếng dán.
+            </p>
+
+        </section>
+
+
+        <section class="workspace">
+
+
+            <aside class="panel">
+
+                <h2>📷 Công cụ thử mẫu</h2>
+
+
+                <div class="group">
+
+                    <div class="label">
+                        1. Tải ảnh
+                    </div>
+
+                    <div class="upload-box">
+
+                        <div class="camera">📷</div>
+
+                        <strong>Chọn ảnh chân dung</strong>
+
+                        <p>
+                            JPG, PNG • ảnh chính diện sẽ dễ thử hơn
+                        </p>
+
+                        <label class="upload-btn" for="photoInput">
+                            Chọn ảnh
+                        </label>
+
+                        <input id="photoInput" type="file" accept="image/*">
+
+                    </div>
+
+                </div>
+
+
+                <div class="group">
+
+                    <div class="label">
+                        2. Dòng sản phẩm
+                    </div>
+
+                    <div class="options" id="productTabs">
+
+                        <button class="option active" data-product="basic">
+                            Basic
+                        </button>
+
+                        <button class="option" data-product="seasonal">
+                            Seasonal
+                        </button>
+
+                        <button class="option" data-product="custom">
+                            Custom
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="group">
+
+                    <div class="label">
+                        3. Mẫu có sẵn
+                    </div>
+
+                    <div class="template-grid" id="templates">
+                    </div>
+
+                </div>
+
+
+                <div class="group">
+
+                    <div class="label">
+                        4. Kích thước
+                    </div>
+
+                    <input id="scale" class="scale" type="range" min="55" max="190" value="100" step="1">
+
+                    <div class="range-values">
+                        <span>Nhỏ</span>
+                        <span id="scaleValue">100px</span>
+                        <span>Lớn</span>
+                    </div>
+
+                </div>
+
+
+                <div class="group">
+
+                    <div class="label">
+                        5. Xoay
+                    </div>
+
+                    <input id="rotate" class="rotate" type="range" min="-180" max="180" value="0" step="1">
+
+                    <div class="range-values">
+                        <span>-180°</span>
+                        <span id="rotateValue">0°</span>
+                        <span>180°</span>
+                    </div>
+
+                </div>
+
+
+                <div class="group">
+
+                    <div class="label">
+                        Điều khiển nhanh
+                    </div>
+
+                    <div class="control-buttons">
+
+                        <button class="small-btn" id="centerPatch">
+                            ⊙ Căn giữa
+                        </button>
+
+                        <button class="small-btn" id="resetTransform">
+                            ↺ Reset
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="group">
+
+                    <div class="label">
+                        Thiết kế đã lưu
+                    </div>
+
+                    <div id="savedList" class="saved-list">
+                    </div>
+
+                </div>
+
+
+                <div class="actions">
+
+                    <button class="secondary" id="resetPhoto">
+                        Xóa ảnh
+                    </button>
+
+                    <button class="primary" id="saveMockup">
+                        ✓ Lưu mẫu thử
+                    </button>
+
+                </div>
+
+            </aside>
+
+
+            <section class="stage-wrapper">
+
+                <div class="stage-head">
+
+                    <strong>✨ Bản thử trên ảnh</strong>
+
+                    <span>
+                        Kéo patch để di chuyển
+                    </span>
+
+                </div>
+
+
+                <div class="photo-stage" id="stage">
+
+                    <div class="placeholder" id="placeholder">
+
+                        <div class="big">🖼️</div>
+
+                        <strong>Ảnh của bạn sẽ hiển thị tại đây</strong>
+
+                        <p>
+                            Tải ảnh lên để bắt đầu
+                        </p>
+
+                    </div>
+
+
+                    <img id="userPhoto" alt="Ảnh thử miếng dán">
+
+
+                    <div id="overlay" class="patch-overlay circle">
+
+                        <span id="overlayIcon">♡</span>
+
+                        <div id="overlayText" class="overlay-text">
+                        </div>
+
+                    </div>
+
+
+                    <div id="dragNote" class="drag-note">
+                        Kéo miếng dán để thay đổi vị trí
+                    </div>
+
+                </div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+
+    <div class="toast" id="toast"></div>
+
+
+    <script>
+
+        const input = document.querySelector("#photoInput");
+
+        const img = document.querySelector("#userPhoto");
+
+        const placeholder = document.querySelector("#placeholder");
+
+        const overlay = document.querySelector("#overlay");
+
+        const overlayIcon = document.querySelector("#overlayIcon");
+
+        const overlayText = document.querySelector("#overlayText");
+
+        const stage = document.querySelector("#stage");
+
+        const scale = document.querySelector("#scale");
+
+        const rotate = document.querySelector("#rotate");
+
+        const scaleValue = document.querySelector("#scaleValue");
+
+        const rotateValue = document.querySelector("#rotateValue");
+
+        const templates = document.querySelector("#templates");
+
+        const savedList = document.querySelector("#savedList");
+
+        const dragNote = document.querySelector("#dragNote");
+
+
+        let product = "basic";
+
+        let current = {
+            name: "Classic",
+            emoji: "♡",
+            bg: "#ffffff",
+            shape: "circle",
+            text: ""
+        };
+
+        let position = {
+            x: 50,
+            y: 50
+        };
+
+        let dragging = false;
+
+        let dragOffset = {
+            x: 0,
+            y: 0
+        };
+
+
+        const sets = {
+
+            basic: [
+
+                {
+                    name: "Classic",
+                    emoji: "♡",
+                    bg: "#ffffff",
+                    shape: "circle",
+                    text: ""
+                },
+
+                {
+                    name: "Fresh Leaf",
+                    emoji: "🌿",
+                    bg: "#d9ead8",
+                    shape: "circle",
+                    text: ""
+                },
+
+                {
+                    name: "Soft Blue",
+                    emoji: "✦",
+                    bg: "#dce8f5",
+                    shape: "circle",
+                    text: ""
+                },
+
+                {
+                    name: "Pure",
+                    emoji: "✧",
+                    bg: "#f7f3ea",
+                    shape: "round",
+                    text: ""
+                },
+
+                {
+                    name: "Lucky",
+                    emoji: "🍀",
+                    bg: "#bfe0cf",
+                    shape: "flower",
+                    text: ""
+                },
+
+                {
+                    name: "Mini Love",
+                    emoji: "♡",
+                    bg: "#ffdfe7",
+                    shape: "heart",
+                    text: ""
+                }
+
+            ],
+
+            seasonal: [
+
+                {
+                    name: "Sweet",
+                    emoji: "🌸",
+                    bg: "#f9d9dc",
+                    shape: "heart",
+                    text: "Sweet"
+                },
+
+                {
+                    name: "Sunny",
+                    emoji: "☀️",
+                    bg: "#f5e3b8",
+                    shape: "star",
+                    text: "Good Day"
+                },
+
+                {
+                    name: "Bloom",
+                    emoji: "🌼",
+                    bg: "#f3e0c9",
+                    shape: "flower",
+                    text: "Bloom"
+                },
+
+                {
+                    name: "Berry",
+                    emoji: "🍓",
+                    bg: "#ffdfe7",
+                    shape: "circle",
+                    text: "Berry"
+                },
+
+                {
+                    name: "Rainbow",
+                    emoji: "🌈",
+                    bg: "#dce8f5",
+                    shape: "cloud",
+                    text: "Happy"
+                },
+
+                {
+                    name: "Magic",
+                    emoji: "✨",
+                    bg: "#e8ddf5",
+                    shape: "star",
+                    text: "Magic"
+                }
+
+            ],
+
+            custom: [
+
+                {
+                    name: "Nature",
+                    emoji: "🌿",
+                    bg: "#d9ead8",
+                    shape: "leaf",
+                    text: "Green"
+                },
+
+                {
+                    name: "Dream",
+                    emoji: "🌙",
+                    bg: "#e8ddf5",
+                    shape: "cloud",
+                    text: "Dream"
+                },
+
+                {
+                    name: "Cute",
+                    emoji: "🐻",
+                    bg: "#f3e0c9",
+                    shape: "round",
+                    text: "Cute"
+                },
+
+                {
+                    name: "Love",
+                    emoji: "♥",
+                    bg: "#f9d9dc",
+                    shape: "heart",
+                    text: "Love"
+                },
+
+                {
+                    name: "Lucky",
+                    emoji: "🍀",
+                    bg: "#bfe0cf",
+                    shape: "flower",
+                    text: "Lucky"
+                },
+
+                {
+                    name: "Sparkle",
+                    emoji: "💫",
+                    bg: "#dce8f5",
+                    shape: "circle",
+                    text: "Shine"
+                }
+
+            ]
+
+        };
+
+
+        function toast(message) {
+
+            const element = document.querySelector("#toast");
+
+            element.textContent = message;
+
+            element.classList.add("show");
+
+            clearTimeout(toast.timer);
+
+            toast.timer = setTimeout(() => {
+                element.classList.remove("show");
+            }, 2200);
+
+        }
+
+
+        function applyShape(shape) {
+
+            overlay.className = "patch-overlay " + shape;
+
+        }
+
+
+        function updateTransform() {
+
+            const size = Number(scale.value);
+
+            const angle = Number(rotate.value);
+
+            overlay.style.width = size + "px";
+
+            overlay.style.height = size + "px";
+
+            overlay.style.left = position.x + "%";
+
+            overlay.style.top = position.y + "%";
+
+            overlay.style.transform =
+                `translate(-50%,-50%) rotate(${angle}deg)`;
+
+            scaleValue.textContent = size + "px";
+
+            rotateValue.textContent = angle + "°";
+
+        }
+
+
+        function applyCurrent() {
+
+            overlay.style.background = current.bg;
+
+            overlayIcon.textContent = current.emoji;
+
+            overlayText.textContent = current.text || "";
+
+            applyShape(current.shape);
+
+            updateTransform();
+
+        }
+
+
+        function selectTemplate(template) {
+
+            current = {
+                ...template
+            };
+
+            applyCurrent();
+
+        }
+
+
+        function renderTemplates() {
+
+            templates.innerHTML = "";
+
+            const list = sets[product];
+
+            list.forEach((template, index) => {
+
+                const button = document.createElement("button");
+
+                button.className =
+                    "template" + (index === 0 ? " active" : "");
+
+                button.innerHTML = `
+
+<div
+class="mini"
+style="
+background:${template.bg};
+border-radius:${template.shape === "circle" ? "50%" : "14px"};
+">
+${template.emoji}
+</div>
+
+${template.name}
+
+`;
+
+                button.onclick = () => {
+
+                    document
+                        .querySelectorAll(".template")
+                        .forEach(item =>
+                            item.classList.remove("active")
+                        );
+
+                    button.classList.add("active");
+
+                    selectTemplate(template);
+
+                };
+
+                templates.appendChild(button);
+
+            });
+
+            selectTemplate(list[0]);
+
+        }
+
+
+        document
+            .querySelectorAll("[data-product]")
+            .forEach(button => {
+
+                button.onclick = () => {
+
+                    document
+                        .querySelectorAll("[data-product]")
+                        .forEach(item =>
+                            item.classList.remove("active")
+                        );
+
+                    button.classList.add("active");
+
+                    product = button.dataset.product;
+
+                    renderTemplates();
+
+                };
+
+            });
+
+
+        input.onchange = (event) => {
+
+            const file = event.target.files[0];
+
+            if (!file) return;
+
+            if (!file.type.startsWith("image/")) {
+
+                toast("Vui lòng chọn file ảnh.");
+
+                return;
+
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = () => {
+
+                img.src = reader.result;
+
+                img.style.display = "block";
+
+                placeholder.style.display = "none";
+
+                overlay.style.display = "flex";
+
+                dragNote.style.display = "block";
+
+                position = {
+                    x: 50,
+                    y: 50
+                };
+
+                updateTransform();
+
+            };
+
+            reader.readAsDataURL(file);
+
+        };
+
+
+        scale.oninput = () => {
+            updateTransform();
+        };
+
+
+        rotate.oninput = () => {
+            updateTransform();
+        };
+
+
+        /* DRAG */
+
+        overlay.addEventListener(
+            "pointerdown",
+            event => {
+
+                if (!img.src) return;
+
+                dragging = true;
+
+                overlay.setPointerCapture(event.pointerId);
+
+                const rect = overlay.getBoundingClientRect();
+
+                dragOffset.x =
+                    event.clientX -
+                    (rect.left + rect.width / 2);
+
+                dragOffset.y =
+                    event.clientY -
+                    (rect.top + rect.height / 2);
+
+                overlay.style.transition = "none";
+
+                event.preventDefault();
+
+            }
+        );
+
+
+        overlay.addEventListener(
+            "pointermove",
+            event => {
+
+                if (!dragging) return;
+
+                const stageRect =
+                    stage.getBoundingClientRect();
+
+                let centerX =
+                    event.clientX -
+                    stageRect.left -
+                    dragOffset.x;
+
+                let centerY =
+                    event.clientY -
+                    stageRect.top -
+                    dragOffset.y;
+
+                const halfW =
+                    overlay.offsetWidth / 2;
+
+                const halfH =
+                    overlay.offsetHeight / 2;
+
+                centerX = Math.max(
+                    halfW,
+                    Math.min(
+                        centerX,
+                        stageRect.width - halfW
+                    )
+                );
+
+                centerY = Math.max(
+                    halfH,
+                    Math.min(
+                        centerY,
+                        stageRect.height - halfH
+                    )
+                );
+
+                position = {
+                    x: centerX / stageRect.width * 100,
+                    y: centerY / stageRect.height * 100
+                };
+
+                overlay.style.left = position.x + "%";
+
+                overlay.style.top = position.y + "%";
+
+            }
+        );
+
+
+        function stopDragging() {
+
+            dragging = false;
+
+            overlay.style.transition = "";
+
+        }
+
+
+        overlay.addEventListener(
+            "pointerup",
+            stopDragging
+        );
+
+        overlay.addEventListener(
+            "pointercancel",
+            stopDragging
+        );
+
+
+        /* DOUBLE CLICK RESET */
+
+        overlay.addEventListener(
+            "dblclick",
+            () => {
+
+                position = {
+                    x: 50,
+                    y: 50
+                };
+
+                updateTransform();
+
+                toast("Đã đưa patch về giữa ảnh.");
+
+            }
+        );
+
+
+        /* CENTER */
+
+        document.querySelector("#centerPatch").onclick = () => {
+
+            position = {
+                x: 50,
+                y: 50
+            };
+
+            updateTransform();
+
+        };
+
+
+        /* RESET TRANSFORM */
+
+        document.querySelector("#resetTransform").onclick = () => {
+
+            position = {
+                x: 50,
+                y: 50
+            };
+
+            scale.value = 100;
+
+            rotate.value = 0;
+
+            updateTransform();
+
+            toast("Đã reset kích thước, góc xoay và vị trí.");
+
+        };
+
+
+        /* RESET PHOTO */
+
+        document.querySelector("#resetPhoto").onclick = () => {
+
+            input.value = "";
+
+            img.removeAttribute("src");
+
+            img.style.display = "none";
+
+            placeholder.style.display = "block";
+
+            overlay.style.display = "none";
+
+            dragNote.style.display = "none";
+
+            localStorage.removeItem("tramPatchMockup");
+
+            toast("Đã xóa ảnh thử.");
+
+        };
+
+
+        /* SAVE MOCKUP */
+
+        document.querySelector("#saveMockup").onclick = () => {
+
+            if (!img.src) {
+
+                toast("Hãy tải ảnh trước khi lưu.");
+
+                return;
+
+            }
+
+            const data = {
+
+                photo: img.src,
+
+                product,
+
+                current,
+
+                scale: Number(scale.value),
+
+                rotate: Number(rotate.value),
+
+                position,
+
+                savedAt: new Date().toISOString()
+
+            };
+
+            try {
+
+                localStorage.setItem(
+                    "tramPatchMockup",
+                    JSON.stringify(data)
+                );
+
+                toast("✓ Đã lưu mẫu thử.");
+
+            } catch (error) {
+
+                toast(
+                    "Ảnh quá lớn. Hãy chọn ảnh nhỏ hơn."
+                );
+
+            }
+
+        };
+
+
+        /* LOAD USER DESIGN */
+
+        function getUserDesign() {
+
+            const raw =
+                localStorage.getItem("tramPatchDesign");
+
+            if (!raw) return null;
+
+            try {
+
+                return JSON.parse(raw);
+
+            } catch (error) {
+
+                return null;
+
+            }
+
+        }
+
+
+        /* SAVED DESIGN */
+
+        function renderSavedList() {
+
+            savedList.innerHTML = "";
+
+            const design = getUserDesign();
+
+            if (!design) {
+
+                savedList.innerHTML = `
+<div style="
+font-size:12px;
+color:#718078;
+line-height:1.6;
+">
+Chưa có thiết kế riêng.<br>
+Hãy tạo mẫu ở trang Thiết kế.
+</div>
+`;
+
+                return;
+
+            }
+
+            const row = document.createElement("div");
+
+            row.className = "saved-item";
+
+            row.innerHTML = `
+
+<span>
+🎨 ${design.text || "Thiết kế của bạn"}
+</span>
+
+<button>
+Áp dụng
+</button>
+
+`;
+
+            row.querySelector("button").onclick = () => {
+
+                product = "custom";
+
+                document
+                    .querySelectorAll("[data-product]")
+                    .forEach(button => {
+                        button.classList.toggle(
+                            "active",
+                            button.dataset.product === "custom"
+                        );
+                    });
+
+                current = {
+
+                    name: "Thiết kế của bạn",
+
+                    emoji: design.icon,
+
+                    bg: design.color,
+
+                    shape: design.shape,
+
+                    text: design.text
+
+                };
+
+                templates.innerHTML = "";
+
+                const button = document.createElement("button");
+
+                button.className = "template active";
+
+                button.innerHTML = `
+
+<div
+class="mini"
+style="
+background:${design.color};
+border-radius:
+${design.shape === "circle" ? "50%" : "14px"};
+">
+${design.icon}
+</div>
+
+Thiết kế của bạn
+
+`;
+
+                templates.appendChild(button);
+
+                applyCurrent();
+
+                toast("✓ Đã áp dụng thiết kế của bạn.");
+
+            };
+
+            savedList.appendChild(row);
+
+        }
+
+
+        /* RESTORE */
+
+        function restoreMockup() {
+
+            const raw =
+                localStorage.getItem("tramPatchMockup");
+
+            if (!raw) return;
+
+            try {
+
+                const data = JSON.parse(raw);
+
+                if (!data.photo) return;
+
+                img.src = data.photo;
+
+                img.style.display = "block";
+
+                placeholder.style.display = "none";
+
+                overlay.style.display = "flex";
+
+                dragNote.style.display = "block";
+
+                product = data.product || "basic";
+
+                current = data.current || current;
+
+                position = data.position || {
+                    x: 50,
+                    y: 50
+                };
+
+                scale.value =
+                    data.scale || 100;
+
+                rotate.value =
+                    data.rotate || 0;
+
+                document
+                    .querySelectorAll("[data-product]")
+                    .forEach(button => {
+                        button.classList.toggle(
+                            "active",
+                            button.dataset.product === product
+                        );
+                    });
+
+                renderTemplates();
+
+                applyCurrent();
+
+            } catch (error) {
+
+                console.log(error);
+
+            }
+
+        }
+
+
+        /* INIT */
+
+        renderTemplates();
+
+        renderSavedList();
+
+        restoreMockup();
+
+    </script>
+
+</body>
+
+</html>

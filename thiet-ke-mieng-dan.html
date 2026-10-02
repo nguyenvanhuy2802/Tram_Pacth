@@ -1,0 +1,1272 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>Tràm Patch — Thiết kế miếng dán</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Quicksand:wght@600;700;800&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --green: #244d3b;
+      --green2: #356b50;
+      --cream: #f7f3ea;
+      --paper: #fffdf8;
+      --line: #e7dfd2;
+      --text: #25342d;
+      --muted: #718078;
+      --gold: #c99e54;
+      --shadow: 0 18px 50px rgba(36, 77, 59, .12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--cream);
+      color: var(--text);
+      font-family: "Be Vietnam Pro", Arial, sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .header {
+      height: 78px;
+      background: rgba(255, 253, 248, .95);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5%;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--green);
+    }
+
+    .brand-logo {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .brand-name {
+      font-family: Quicksand;
+      font-weight: 800;
+    }
+
+    .brand small {
+      display: block;
+      font-size: 9px;
+      letter-spacing: 2px;
+    }
+
+    .nav {
+      display: flex;
+      gap: 27px;
+      font-size: 14px;
+      color: #5f6d66;
+    }
+
+    .nav a:hover,
+    .nav .active {
+      color: var(--green);
+      font-weight: 800;
+    }
+
+    .header-btn {
+      border: 0;
+      background: var(--green);
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-weight: 800;
+    }
+
+    .page {
+      max-width: 1250px;
+      margin: auto;
+      padding: 42px 24px 80px;
+    }
+
+    .crumb {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 15px;
+    }
+
+    .crumb a {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .title {
+      text-align: center;
+      max-width: 780px;
+      margin: 0 auto 40px;
+    }
+
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: 2px;
+      font-weight: 800;
+      color: var(--green2);
+      margin-bottom: 10px;
+    }
+
+    .title h1 {
+      font: 800 clamp(34px, 5vw, 54px)/1.08 Quicksand;
+      color: var(--green);
+      margin: 0 0 12px;
+    }
+
+    .title p {
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 370px 1fr;
+      gap: 25px;
+      align-items: start;
+    }
+
+    .panel,
+    .preview {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel {
+      padding: 25px;
+    }
+
+    .panel h2 {
+      font: 800 21px Quicksand;
+      color: var(--green);
+      margin: 0 0 20px;
+    }
+
+    .group {
+      border-top: 1px solid var(--line);
+      padding: 18px 0;
+    }
+
+    .group:first-of-type {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .label {
+      font-size: 11px;
+      font-weight: 800;
+      color: #647169;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 11px;
+    }
+
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .option {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 12px;
+      padding: 9px 11px;
+      color: #506058;
+      transition: .2s;
+    }
+
+    .option:hover {
+      transform: translateY(-2px);
+    }
+
+    .option.active {
+      border-color: var(--green);
+      background: #eef5ef;
+      color: var(--green);
+      font-weight: 800;
+    }
+
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+    }
+
+    .color {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 3px solid white;
+      box-shadow: 0 0 0 1px var(--line);
+      padding: 0;
+    }
+
+    .color.active {
+      box-shadow: 0 0 0 2px var(--green);
+      transform: scale(1.08);
+    }
+
+    .shape-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+    }
+
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 7px;
+    }
+
+    .icon {
+      height: 52px;
+      font-size: 21px;
+      padding: 4px;
+    }
+
+    .icon span {
+      display: block;
+      font-size: 10px;
+      margin-top: 3px;
+    }
+
+    .field {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+      outline: none;
+    }
+
+    .field:focus {
+      border-color: var(--green);
+    }
+
+    .actions {
+      display: flex;
+      gap: 9px;
+      margin-top: 20px;
+    }
+
+    .primary,
+    .secondary {
+      border: 0;
+      border-radius: 14px;
+      padding: 13px 16px;
+      font-weight: 800;
+    }
+
+    .primary {
+      background: var(--green);
+      color: white;
+      flex: 1;
+    }
+
+    .secondary {
+      background: #eee9df;
+      color: var(--green);
+    }
+
+    .saved-banner {
+      display: none;
+      margin-top: 15px;
+      padding: 12px;
+      background: #edf6ef;
+      border: 1px solid #d3e4d6;
+      color: var(--green);
+      border-radius: 13px;
+      font-size: 13px;
+    }
+
+    .preview {
+      padding: 28px;
+      min-height: 720px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preview-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .preview-head strong {
+      font: 800 20px Quicksand;
+      color: var(--green);
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .canvas {
+      flex: 1;
+      min-height: 570px;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 50% 40%, #fff 0, #f4ede1 75%);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .patch {
+      width: 220px;
+      height: 220px;
+      background: #fff;
+      border: 2px solid #d8d2c7;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 25px 45px rgba(0, 0, 0, .14);
+      transition:
+        width .25s ease,
+        height .25s ease,
+        background .25s ease,
+        border-radius .25s ease,
+        transform .3s ease;
+    }
+
+    .patch.circle {
+      border-radius: 50%;
+    }
+
+    .patch.round {
+      border-radius: 42px;
+    }
+
+    .patch.square {
+      border-radius: 25px;
+    }
+
+    .patch.heart {
+      width: 190px;
+      height: 190px;
+      border-radius: 45% 45% 48% 48%;
+      transform: rotate(-45deg);
+    }
+
+    .patch.heart .patch-inner {
+      transform: rotate(45deg);
+    }
+
+    .patch.star {
+      clip-path:
+        polygon(50% 0%,
+          61% 35%,
+          98% 35%,
+          68% 57%,
+          79% 94%,
+          50% 72%,
+          21% 94%,
+          32% 57%,
+          2% 35%,
+          39% 35%);
+      border: 0;
+    }
+
+    .patch.flower {
+      clip-path:
+        polygon(50% 0%,
+          62% 24%,
+          88% 12%,
+          78% 40%,
+          100% 50%,
+          78% 60%,
+          88% 88%,
+          62% 76%,
+          50% 100%,
+          38% 76%,
+          12% 88%,
+          22% 60%,
+          0 50%,
+          22% 40%,
+          12% 12%,
+          38% 24%);
+      border: 0;
+    }
+
+    .patch.cloud {
+      border-radius: 45px;
+    }
+
+    .patch.leaf {
+      border-radius: 60% 25% 60% 25%;
+      transform: rotate(-35deg);
+    }
+
+    .patch.leaf .patch-inner {
+      transform: rotate(35deg);
+    }
+
+    .patch.drop {
+      border-radius: 60% 60% 60% 20%;
+      transform: rotate(45deg);
+    }
+
+    .patch.drop .patch-inner {
+      transform: rotate(-45deg);
+    }
+
+    .patch-inner {
+      text-align: center;
+      color: var(--green);
+      font-weight: 800;
+      padding: 20px;
+    }
+
+    .patch-icon {
+      font-size: 58px;
+      display: block;
+      margin-bottom: 7px;
+    }
+
+    .patch-text {
+      font: 800 17px Quicksand;
+      max-width: 150px;
+      margin: auto;
+      word-break: break-word;
+    }
+
+    .preview-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .price {
+      font-size: 23px;
+      font-weight: 800;
+      color: #a47935;
+    }
+
+    @media(max-width:900px) {
+
+      .nav {
+        display: none;
+      }
+
+      .header-btn {
+        display: none;
+      }
+
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .preview {
+        min-height: 600px;
+      }
+
+      .icon-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+    }
+
+    @media(max-width:500px) {
+
+      .color-grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+
+      .icon-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .shape-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+    }
+
+    .custom-next-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 10px;
+    }
+
+    .try-design-btn,
+    .view-cart-btn {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .try-design-btn {
+      background: #eef5ef;
+      color: var(--green);
+      cursor: pointer;
+    }
+
+    .view-cart-btn {
+      background: #fff;
+      color: var(--green);
+    }
+
+    .try-design-btn:hover,
+    .view-cart-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    @media(max-width:500px) {
+
+      .custom-next-actions {
+        grid-template-columns: 1fr;
+      }
+
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <header class="header">
+
+    <a class="brand" href="index.html">
+      <img class="brand-logo" src="assets/logo.png" alt="Tràm Patch Logo">
+
+      <div>
+        <div class="brand-name">TRÀM PATCH</div>
+        <small>4T HOLDINGS</small>
+      </div>
+
+    </a>
+
+    <nav class="nav">
+      <a href="index.html">Trang chủ</a>
+      <a class="active" href="thiet-ke-mieng-dan.html">Thiết kế</a>
+      <a href="thu-mau-anh.html">Thử trên ảnh</a>
+      <a href="index.html#products">Sản phẩm</a>
+    </nav>
+
+    <a class="header-btn" href="thu-mau-anh.html">
+      📷 Thử trên ảnh
+    </a>
+
+  </header>
+
+
+  <main class="page">
+
+    <div class="crumb">
+      <a href="index.html">Trang chủ</a>
+      /
+      Thiết kế miếng dán
+    </div>
+
+
+    <section class="title">
+
+      <div class="eyebrow">CUSTOM PATCH STUDIO</div>
+
+      <h1>Tạo miếng dán theo cách của bạn</h1>
+
+      <p>
+        Chọn hình dạng, màu sắc, biểu tượng và câu chữ.
+        Sau đó lưu thiết kế để thử trực tiếp trên ảnh của bạn.
+      </p>
+
+    </section>
+
+
+    <section class="workspace">
+
+
+      <aside class="panel">
+
+        <h2>🎨 Tùy chỉnh thiết kế</h2>
+
+
+        <div class="group">
+
+          <div class="label">Hình dạng</div>
+
+          <div class="shape-grid" id="shapes">
+
+            <button class="option active" data-shape="circle">● Tròn</button>
+
+            <button class="option" data-shape="round">▣ Bo góc</button>
+
+            <button class="option" data-shape="square">□ Vuông</button>
+
+            <button class="option" data-shape="heart">♥ Tim</button>
+
+            <button class="option" data-shape="star">★ Sao</button>
+
+            <button class="option" data-shape="flower">✿ Hoa</button>
+
+            <button class="option" data-shape="cloud">☁ Mây</button>
+
+            <button class="option" data-shape="leaf">🌿 Lá</button>
+
+            <button class="option" data-shape="drop">💧 Giọt</button>
+
+          </div>
+
+        </div>
+
+
+        <div class="group">
+
+          <div class="label">Màu nền</div>
+
+          <div class="color-grid">
+
+            <button class="color active" data-color="#ffffff" style="background:#fff"></button>
+
+            <button class="color" data-color="#f9d9dc" style="background:#f9d9dc"></button>
+
+            <button class="color" data-color="#ffdfe7" style="background:#ffdfe7"></button>
+
+            <button class="color" data-color="#d9ead8" style="background:#d9ead8"></button>
+
+            <button class="color" data-color="#bfe0cf" style="background:#bfe0cf"></button>
+
+            <button class="color" data-color="#dce8f5" style="background:#dce8f5"></button>
+
+            <button class="color" data-color="#cfe8f1" style="background:#cfe8f1"></button>
+
+            <button class="color" data-color="#f5e3b8" style="background:#f5e3b8"></button>
+
+            <button class="color" data-color="#f4d5a8" style="background:#f4d5a8"></button>
+
+            <button class="color" data-color="#e8ddf5" style="background:#e8ddf5"></button>
+
+            <button class="color" data-color="#e4d5ef" style="background:#e4d5ef"></button>
+
+            <button class="color" data-color="#f3e0c9" style="background:#f3e0c9"></button>
+
+            <button class="color" data-color="#263b34" style="background:#263b34"></button>
+
+            <button class="color" data-color="#506f61" style="background:#506f61"></button>
+
+            <button class="color" data-color="#f3eee5" style="background:#f3eee5"></button>
+
+          </div>
+
+        </div>
+
+
+        <div class="group">
+
+          <div class="label">Biểu tượng</div>
+
+          <div class="icon-grid" id="icons">
+
+            <button class="option icon active" data-icon="♡">♡<span>Tim</span></button>
+
+            <button class="option icon" data-icon="♥">♥<span>Love</span></button>
+
+            <button class="option icon" data-icon="🌿">🌿<span>Lá</span></button>
+
+            <button class="option icon" data-icon="🍃">🍃<span>Leaf</span></button>
+
+            <button class="option icon" data-icon="🌱">🌱<span>Mầm</span></button>
+
+            <button class="option icon" data-icon="🌸">🌸<span>Hoa</span></button>
+
+            <button class="option icon" data-icon="🌷">🌷<span>Tulip</span></button>
+
+            <button class="option icon" data-icon="🌻">🌻<span>Sunflower</span></button>
+
+            <button class="option icon" data-icon="🌼">🌼<span>Bloom</span></button>
+
+            <button class="option icon" data-icon="⭐">⭐<span>Star</span></button>
+
+            <button class="option icon" data-icon="✨">✨<span>Sparkle</span></button>
+
+            <button class="option icon" data-icon="☀️">☀️<span>Sunny</span></button>
+
+            <button class="option icon" data-icon="🌙">🌙<span>Moon</span></button>
+
+            <button class="option icon" data-icon="☁️">☁️<span>Cloud</span></button>
+
+            <button class="option icon" data-icon="🦋">🦋<span>Butterfly</span></button>
+
+            <button class="option icon" data-icon="🐝">🐝<span>Bee</span></button>
+
+            <button class="option icon" data-icon="🍀">🍀<span>Lucky</span></button>
+
+            <button class="option icon" data-icon="🍓">🍓<span>Berry</span></button>
+
+            <button class="option icon" data-icon="🍋">🍋<span>Lemon</span></button>
+
+            <button class="option icon" data-icon="🍒">🍒<span>Cherry</span></button>
+
+            <button class="option icon" data-icon="🐻">🐻<span>Bear</span></button>
+
+            <button class="option icon" data-icon="🐰">🐰<span>Bunny</span></button>
+
+            <button class="option icon" data-icon="🌈">🌈<span>Rainbow</span></button>
+
+            <button class="option icon" data-icon="💫">💫<span>Magic</span></button>
+
+          </div>
+
+        </div>
+
+
+        <div class="group">
+
+          <div class="label">Dòng chữ</div>
+
+          <input id="patchText" class="field" maxlength="20" placeholder="Ví dụ: Be You">
+
+        </div>
+
+
+        <div class="group">
+
+          <div class="label">Bộ sưu tập</div>
+
+          <div class="options">
+
+            <button class="option quick" data-set="nature">
+              🌿 Nature
+            </button>
+
+            <button class="option quick" data-set="sweet">
+              🌸 Sweet
+            </button>
+
+            <button class="option quick" data-set="sunny">
+              ☀️ Sunny
+            </button>
+
+            <button class="option quick" data-set="dream">
+              🌙 Dream
+            </button>
+
+            <button class="option quick" data-set="berry">
+              🍓 Berry
+            </button>
+
+            <button class="option quick" data-set="cute">
+              🐻 Cute
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="actions">
+
+          <button class="secondary" id="reset">
+            Đặt lại
+          </button>
+
+          <button class="secondary" id="save">
+            ✓ Lưu thiết kế
+          </button>
+
+          <button class="primary" id="addCustom">
+            🛒 Thêm vào giỏ
+          </button>
+
+        </div>
+
+        <div class="custom-next-actions">
+
+          <button class="try-design-btn" id="saveAndTry">
+
+            📷 Lưu & thử trên ảnh
+
+          </button>
+
+          <a href="gio-hang.html" class="view-cart-btn">
+
+            🛒 Xem giỏ hàng
+
+          </a>
+
+        </div>
+
+
+        <div class="saved-banner" id="saved">
+          ✓ Thiết kế đã được lưu. Bạn có thể sang trang “Thử trên ảnh”.
+        </div>
+
+      </aside>
+
+
+      <section class="preview">
+
+        <div class="preview-head">
+
+          <strong>✨ Bản xem trước</strong>
+
+          <span class="hint">
+            Custom • 15 miếng / hộp
+          </span>
+
+        </div>
+
+
+        <div class="canvas">
+
+          <div id="patch" class="patch circle">
+
+            <div class="patch-inner">
+
+              <span id="patchIcon" class="patch-icon">
+                ♡
+              </span>
+
+              <div id="patchTextPreview" class="patch-text">
+                Be You
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="preview-foot">
+
+          <span id="designMeta">
+            Tròn • Trắng • Tim
+          </span>
+
+          <span class="price">
+            60.000đ
+          </span>
+
+        </div>
+
+      </section>
+
+    </section>
+
+  </main>
+
+  <script src="js/cart.js"></script>
+  <script>
+
+    const patch = document.querySelector("#patch");
+    const icon = document.querySelector("#patchIcon");
+    const textPreview = document.querySelector("#patchTextPreview");
+    const textInput = document.querySelector("#patchText");
+    const meta = document.querySelector("#designMeta");
+    const saved = document.querySelector("#saved");
+
+    let state = {
+      shape: "circle",
+      color: "#ffffff",
+      icon: "♡",
+      text: "Be You"
+    };
+
+
+    const shapeNames = {
+      circle: "Tròn",
+      round: "Bo góc",
+      square: "Vuông",
+      heart: "Tim",
+      star: "Sao",
+      flower: "Hoa",
+      cloud: "Mây",
+      leaf: "Lá",
+      drop: "Giọt"
+    };
+
+
+    const iconNames = {
+      "♡": "Tim",
+      "♥": "Love",
+      "🌿": "Lá",
+      "🍃": "Leaf",
+      "🌱": "Mầm",
+      "🌸": "Hoa",
+      "🌷": "Tulip",
+      "🌻": "Sunflower",
+      "🌼": "Bloom",
+      "⭐": "Sao",
+      "✨": "Lấp lánh",
+      "☀️": "Nắng",
+      "🌙": "Trăng",
+      "☁️": "Mây",
+      "🦋": "Bướm",
+      "🐝": "Ong",
+      "🍀": "Cỏ may mắn",
+      "🍓": "Dâu",
+      "🍋": "Chanh",
+      "🍒": "Cherry",
+      "🐻": "Gấu",
+      "🐰": "Thỏ",
+      "🌈": "Cầu vồng",
+      "💫": "Magic"
+    };
+
+
+    function render() {
+
+      patch.className = "patch " + state.shape;
+
+      patch.style.background = state.color;
+
+      icon.textContent = state.icon;
+
+      textPreview.textContent = state.text || "Be You";
+
+      meta.textContent =
+        `${shapeNames[state.shape]} • ${state.color} • ${iconNames[state.icon]}`;
+
+    }
+
+
+    function updateActive() {
+
+      document.querySelectorAll("[data-shape]")
+        .forEach(button => {
+          button.classList.toggle(
+            "active",
+            button.dataset.shape === state.shape
+          );
+        });
+
+
+      document.querySelectorAll("[data-color]")
+        .forEach(button => {
+          button.classList.toggle(
+            "active",
+            button.dataset.color === state.color
+          );
+        });
+
+
+      document.querySelectorAll("[data-icon]")
+        .forEach(button => {
+          button.classList.toggle(
+            "active",
+            button.dataset.icon === state.icon
+          );
+        });
+
+    }
+
+
+    document.querySelectorAll("[data-shape]")
+      .forEach(button => {
+
+        button.onclick = () => {
+
+          state.shape = button.dataset.shape;
+
+          updateActive();
+          render();
+
+        };
+
+      });
+
+
+    document.querySelectorAll("[data-color]")
+      .forEach(button => {
+
+        button.onclick = () => {
+
+          state.color = button.dataset.color;
+
+          updateActive();
+          render();
+
+        };
+
+      });
+
+
+    document.querySelectorAll("[data-icon]")
+      .forEach(button => {
+
+        button.onclick = () => {
+
+          state.icon = button.dataset.icon;
+
+          updateActive();
+          render();
+
+        };
+
+      });
+
+
+    textInput.oninput = () => {
+
+      state.text = textInput.value || "Be You";
+
+      render();
+
+    };
+
+
+    const presets = {
+
+      nature: {
+        shape: "leaf",
+        color: "#d9ead8",
+        icon: "🌿",
+        text: "Green Day"
+      },
+
+      sweet: {
+        shape: "heart",
+        color: "#f9d9dc",
+        icon: "🌸",
+        text: "Sweet"
+      },
+
+      sunny: {
+        shape: "star",
+        color: "#f5e3b8",
+        icon: "☀️",
+        text: "Good Day"
+      },
+
+      dream: {
+        shape: "cloud",
+        color: "#e8ddf5",
+        icon: "🌙",
+        text: "Dream"
+      },
+
+      berry: {
+        shape: "circle",
+        color: "#ffdfe7",
+        icon: "🍓",
+        text: "Berry Love"
+      },
+
+      cute: {
+        shape: "round",
+        color: "#f3e0c9",
+        icon: "🐻",
+        text: "Be Cute"
+      }
+
+    };
+
+
+    document.querySelectorAll(".quick")
+      .forEach(button => {
+
+        button.onclick = () => {
+
+          state = {
+            ...state,
+            ...presets[button.dataset.set]
+          };
+
+          textInput.value = state.text;
+
+          updateActive();
+          render();
+
+        };
+
+      });
+
+
+    document.querySelector("#reset").onclick = () => {
+
+      state = {
+        shape: "circle",
+        color: "#ffffff",
+        icon: "♡",
+        text: "Be You"
+      };
+
+      textInput.value = "Be You";
+
+      updateActive();
+      render();
+
+      saved.style.display = "none";
+
+    };
+
+
+    function saveCurrentDesign() {
+
+      const data = {
+
+        shape: state.shape,
+
+        color: state.color,
+
+        icon: state.icon,
+
+        text: state.text || "Be You",
+
+        savedAt:
+          new Date().toISOString()
+
+      };
+
+
+      localStorage.setItem(
+        "tramPatchDesign",
+        JSON.stringify(data)
+      );
+
+
+      saved.style.display = "block";
+
+
+      return data;
+    }
+
+
+    /* =========================
+       LƯU THIẾT KẾ
+    ========================= */
+
+    document.querySelector("#save").onclick = () => {
+
+      saveCurrentDesign();
+
+    };
+
+
+    /* =========================
+       THÊM CUSTOM VÀO GIỎ
+    ========================= */
+
+    document
+      .querySelector("#addCustom")
+      .onclick = () => {
+
+        const design =
+          saveCurrentDesign();
+
+
+        const success =
+          addCustomToCart(
+            design,
+            1
+          );
+
+
+        if (success) {
+
+          setTimeout(() => {
+
+            window.location.href =
+              "gio-hang.html";
+
+          }, 500);
+
+        }
+
+      };
+
+
+    /* =========================
+       LƯU + THỬ TRÊN ẢNH
+    ========================= */
+
+    document
+      .querySelector("#saveAndTry")
+      .onclick = () => {
+
+        saveCurrentDesign();
+
+        window.location.href =
+          "thu-mau-anh.html";
+
+      };
+
+
+    function loadSaved() {
+
+      const raw = localStorage.getItem("tramPatchDesign");
+
+      if (!raw) {
+
+        render();
+        return;
+
+      }
+
+      try {
+
+        state = {
+          ...state,
+          ...JSON.parse(raw)
+        };
+
+        textInput.value = state.text;
+
+        updateActive();
+        render();
+
+      } catch (error) {
+
+        render();
+
+      }
+
+    }
+
+
+    loadSaved();
+
+  </script>
+
+</body>
+
+</html>
